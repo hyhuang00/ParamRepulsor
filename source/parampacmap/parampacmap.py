@@ -153,7 +153,7 @@ class ParamPaCMAP(BaseEstimator):
         input_dims = X.shape[1]
 
         # Data Preprocessing
-        X = self._scale_input(X)
+        X, input_dims = self._scale_input(X, input_dims)
 
         self.model = (
             module.ParamPaCMAP(
