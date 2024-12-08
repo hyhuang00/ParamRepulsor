@@ -1,6 +1,29 @@
-[build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
+[project]
+name = "parampacmap"
+version = "0.1.0"
+description = "Package for Parameterized PaCMAP (ParamRepulsor)."
+readme = "README.md"
+url = "https://github.com/hyhuang00/ParamRepulsor"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers"
 ]
-build-backend = "setuptools.build_meta"
+authors = [
+    { name = "Haiyang Huang", email = "hyhuang@cs.duke.edu" },
+    { name = "Michael Pilosov", email = "consistentbayes@gmail.com" }
+]
+requires-python = ">=3.9"
+dependencies = [
+    "annoy>=1.17",
+    "numba==0.60.0",
+    "numpy>=1.20,<2.1",
+    "scikit-learn>=0.20",
+    "torch==2.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
