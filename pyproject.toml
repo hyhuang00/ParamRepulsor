@@ -27,7 +27,6 @@ dependencies = [
 torch200 = [
   "torch==2.0.0",
 ]
-
 cpu = [
   "torch>=2.1.0",
 ]
@@ -40,32 +39,18 @@ cu121 = [
 cu124 = [
   "torch>=2.5.1",
 ]
+extras = [
+    "pyyaml>=6.0.2",
+]
 
 [tool.uv]
 conflicts = [
   [
     { extra = "cpu" },
     { extra = "cu118" },
-  ],
-  [
-    { extra = "cpu" },
-    { extra = "cu121" },
-  ],
-  [
-    { extra = "cpu" },
-    { extra = "cu124" },
-  ],
-  [
-    { extra = "cu118" },
-    { extra = "cu121" },
-  ],
-  [
-    { extra = "cu118" },
-    { extra = "cu124" },
-  ],
-  [
     { extra = "cu121" },
     { extra = "cu124" },
+    { extra = "torch200" },
   ],
 ]
 
@@ -106,4 +91,5 @@ build-backend = "hatchling.build"
 [dependency-groups]
 dev = [
     "ipython>=8.18.1",
+    "pyyaml>=6.0.2",
 ]
