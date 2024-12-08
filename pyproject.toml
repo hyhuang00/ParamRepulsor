@@ -15,7 +15,7 @@ authors = [
     { name = "Haiyang Huang", email = "hyhuang@cs.duke.edu" },
     { name = "Michael Pilosov", email = "consistentbayes@gmail.com" }
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.9,<3.12"  # annoy 1.17 blocks on python 3.12
 dependencies = [
     "annoy>=1.17",
     "numba==0.60.0",
