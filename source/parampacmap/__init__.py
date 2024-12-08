@@ -2,7 +2,11 @@ from . import models
 from . import utils
 from .parampacmap import ParamPaCMAP
 
-import pkg_resources
+from importlib.metadata import version, PackageNotFoundError
 
-__version__ = pkg_resources.get_distribution("parampacmap").version
+try:
+    __version__ = version('parampacmap')
+except PackageNotFoundError:
+    __version__ = "unknown"
+
 __all__ = ["models", "utils", "ParamPaCMAP"]
