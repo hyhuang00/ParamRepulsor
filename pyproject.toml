@@ -42,14 +42,19 @@ cu124 = [
 extras = [
     "pyyaml>=6.0.2",
 ]
+mps = [
+  "torch>=2.5.1",
+]
 
 [tool.uv]
+package = true
 conflicts = [
   [
     { extra = "cpu" },
     { extra = "cu118" },
     { extra = "cu121" },
     { extra = "cu124" },
+    { extra = "mps" },
     { extra = "torch200" },
   ],
 ]
@@ -82,7 +87,6 @@ explicit = true
 name = "pytorch-cu124"
 url = "https://download.pytorch.org/whl/cu124"
 explicit = true
-
 
 [build-system]
 requires = ["hatchling"]

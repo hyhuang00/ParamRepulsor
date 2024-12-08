@@ -1,6 +1,12 @@
 import torch
 from torch import nn
 
+if torch.cuda.is_available():
+    TORCH_DEVICE = torch.device("cuda")
+elif torch.backends.mps.is_available():
+    TORCH_DEVICE = torch.device("mps")
+else:
+    TORCH_DEVICE = torch.device("cpu")
 
 class SinLayer(nn.Module):
     def __init__(self):
@@ -16,7 +22,7 @@ class ANNLayer(nn.Module):
         in_dims: int,
         out_dims: int,
         bias: bool = True,
-        device: torch.device = torch.device("cuda"),
+        device: torch.device = TORCH_DEVICE,
         dtype: torch.dtype = torch.float32,
         activation: str = "relu",
         residual_connection: bool = False,
@@ -66,7 +72,7 @@ class ANN(nn.Module):
         layer_size,
         eye_init: bool = False,
         bias: bool = True,
-        device: torch.device = torch.device("cuda"),
+        device: torch.device = TORCH_DEVICE,
         dtype: torch.dtype = torch.float32,
         activation: str = "relu",
         residual_connection: bool = False,
@@ -136,11 +142,7 @@ class ParamPaCMAP(nn.Module):
         self, input_dims=100, output_dims=2, model_dict: dict = {}
     ) -> nn.Module:
         backbone = model_dict["backbone"]
-
-        if torch.cuda.is_available():
-            device = torch.device("cuda")
-        else:
-            device = torch.device("cpu")
+        device = TORCH_DEVICE
 
         # Fully Connected Layers
         if backbone == "ANN":
@@ -204,30 +206,26 @@ class PaCMAPLoss(nn.Module):
     ) -> None:
         super().__init__()
         self.weight = weight
-        if torch.cuda.is_available():
-            device = torch.device("cuda")
-        else:
-            device = torch.device("cpu")
         self.nnloss = NNLoss(
             weight[0],
             threshold=thresholds[0],
             exponent=exponents[0],
             const=consts[0],
-            device=device,
+            device=TORCH_DEVICE,
         )
         self.fploss = FPLoss(
             weight[1],
             threshold=thresholds[1],
             exponent=exponents[1],
             const=consts[1],
-            device=device,
+            device=TORCH_DEVICE,
         )
         self.mnloss = MNLoss(
             weight[2],
             threshold=thresholds[2],
             exponent=exponents[2],
             const=consts[2],
-            device=device,
+            device=TORCH_DEVICE,
         )
         self.label_loss = nn.CrossEntropyLoss(ignore_index=-1)
         self.label_weight = label_weight
@@ -260,7 +258,7 @@ class NNLoss(nn.Module):
     """NN Loss of PaCMAP."""
 
     def __init__(
-        self, weight, threshold=None, exponent=2, const=10, device=torch.device("cuda")
+        self, weight, threshold=None, exponent=2, const=10, device=TORCH_DEVICE,
     ) -> None:
         super().__init__()
         self.weight = weight
@@ -290,7 +288,7 @@ class FPLoss(nn.Module):
     """FP Loss of PaCMAP."""
 
     def __init__(
-        self, weight, threshold=None, exponent=2, const=1, device=torch.device("cuda")
+        self, weight, threshold=None, exponent=2, const=1, device=TORCH_DEVICE,
     ) -> None:
         super().__init__()
         self.weight = weight
@@ -324,7 +322,7 @@ class MNLoss(nn.Module):
         threshold=None,
         exponent=2,
         const=10000,
-        device=torch.device("cuda"),
+        device=TORCH_DEVICE,
     ) -> None:
         super().__init__()
         self.weight = weight

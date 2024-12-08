@@ -6,7 +6,12 @@ from typing import Optional
 import numpy as np
 import torch
 
-TORCH_DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+if torch.cuda.is_available():
+    TORCH_DEVICE = torch.device("cuda")
+elif torch.backends.mps.is_available():
+    TORCH_DEVICE = torch.device("mps")
+else:
+    TORCH_DEVICE = torch.device("cpu")
 
 class PaCMAPDataset(torch.utils.data.Dataset):
     """The PaCMAP dataset for training.
@@ -76,7 +81,7 @@ class FastDataloader:
         reshape=None,
         dtype=torch.float32,
     ):
-        self.data = torch.tensor(data).to(device).to(dtype)
+        self.data = torch.tensor(data, dtype=torch.float32).to(device).to(dtype)
         self.labels = None
         if labels is not None:
             self.labels = torch.tensor(labels).to(device)
