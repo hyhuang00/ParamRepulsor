@@ -454,7 +454,7 @@ class ParamPaCMAP(BaseEstimator):
     def fit_transform(
         self, X: np.ndarray, y: Optional[np.ndarray] = None, per_layer: bool = False
     ):
-        self.fit(X, y=y, per_layer=per_layer)
+        self.fit(X, per_layer=per_layer)
         if len(self.intermediate_outputs) == 0:
             return self._embedding
         return self._embedding, self.intermediate_outputs

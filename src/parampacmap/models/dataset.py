@@ -6,6 +6,7 @@ from typing import Optional
 import numpy as np
 import torch
 
+TORCH_DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 class PaCMAPDataset(torch.utils.data.Dataset):
     """The PaCMAP dataset for training.
@@ -70,7 +71,7 @@ class FastDataloader:
         mn_pairs: np.ndarray,
         labels: Optional[np.ndarray] = None,
         batch_size=1024,
-        device=torch.device("cuda"),
+        device=TORCH_DEVICE,
         shuffle: bool = False,
         reshape=None,
         dtype=torch.float32,
@@ -167,7 +168,7 @@ class FastNSDataloader:
         mn_pairs: np.ndarray,
         labels: Optional[np.ndarray] = None,
         batch_size=1024,
-        device=torch.device("cuda"),
+        device=TORCH_DEVICE,
         shuffle: bool = False,
         reshape=None,
         dtype=torch.float32,
@@ -269,7 +270,7 @@ class FastIBNSDataloader:
         mn_pairs: np.ndarray,
         labels: Optional[np.ndarray] = None,
         batch_size=1024,
-        device=torch.device("cuda"),
+        device=TORCH_DEVICE,
         shuffle: bool = False,
         reshape=None,
         dtype=torch.float32,
