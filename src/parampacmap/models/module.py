@@ -113,12 +113,14 @@ class ParamPaCMAP(nn.Module):
         output_dims: int = 2,
         model_dict: dict = {},
         n_samples: int = None,
+        is_parametric: bool = True,
     ) -> None:
         super().__init__()
         self.n_samples = n_samples
         self.model_dict = model_dict
         self._output_per_layer = False
         self.backbone = self.get_backbone(input_dims, output_dims, model_dict)
+        self.is_parametric = is_parametric
 
     def set_output_per_layer(self, value: bool):
         self._output_per_layer = value

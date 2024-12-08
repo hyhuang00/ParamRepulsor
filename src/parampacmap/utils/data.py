@@ -35,14 +35,15 @@ def generate_pair(
     print_verbose("Calculated sigma", verbose)
     scaled_dist = scale_dist(knn_distances, sig, nbrs)
     print_verbose("Found scaled dist", verbose)
-    pair_neighbors = sample_neighbors_pair(X, scaled_dist, nbrs, n_neighbors)
+    X = X.astype(np.float32)
+    pair_neighbors = sample_neighbors_pair(X, scaled_dist, nbrs, np.int32(n_neighbors))
     if random_state is None:
-        pair_MN = sample_MN_pair(X, n_MN, option)
+        pair_MN = sample_MN_pair(X, np.int32(n_MN), np.int32(option))
         pair_FP = sample_FP_pair(X, pair_neighbors, n_neighbors, n_FP)
     else:
-        pair_MN = sample_MN_pair_deterministic(X, n_MN, random_state, option)
+        pair_MN = sample_MN_pair_deterministic(X, np.int32(n_MN), random_state, option)
         pair_FP = sample_FP_pair_deterministic(
-            X, pair_neighbors, n_neighbors, n_FP, random_state
+            X, pair_neighbors, n_neighbors, np.int32(n_FP), random_state
         )
     return pair_neighbors, pair_MN, pair_FP, tree
 
