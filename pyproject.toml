@@ -21,10 +21,13 @@ dependencies = [
     "numba==0.60.0",
     "numpy>=1.20,<2.1",
     "scikit-learn>=0.20",
-    # "torch>=2.0",
 ]
 
 [project.optional-dependencies]
+torch200 = [
+  "torch==2.0.0",
+]
+
 cpu = [
   "torch>=2.1.0",
 ]
@@ -68,7 +71,7 @@ conflicts = [
 
 [tool.uv.sources]
 torch = [
-    { index = "pytorch-cpu",   extra = "cpu", marker = "platform_system != 'Darwin'" },
+    { index = "pytorch-cpu",   extra = "cpu",   marker = "platform_system != 'Darwin'" },
     { index = "pytorch-cu118", extra = "cu118", marker = "platform_system != 'Darwin'" },
     { index = "pytorch-cu121", extra = "cu121", marker = "platform_system != 'Darwin'" },
     { index = "pytorch-cu124", extra = "cu124", marker = "platform_system != 'Darwin'" },
