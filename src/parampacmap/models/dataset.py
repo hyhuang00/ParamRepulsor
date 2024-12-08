@@ -6,6 +6,12 @@ from typing import Optional
 import numpy as np
 import torch
 
+if torch.cuda.is_available():
+    TORCH_DEVICE = torch.device("cuda")
+elif torch.backends.mps.is_available():
+    TORCH_DEVICE = torch.device("mps")
+else:
+    TORCH_DEVICE = torch.device("cpu")
 
 class PaCMAPDataset(torch.utils.data.Dataset):
     """The PaCMAP dataset for training.
@@ -70,12 +76,12 @@ class FastDataloader:
         mn_pairs: np.ndarray,
         labels: Optional[np.ndarray] = None,
         batch_size=1024,
-        device=torch.device("cuda"),
+        device=TORCH_DEVICE,
         shuffle: bool = False,
         reshape=None,
         dtype=torch.float32,
     ):
-        self.data = torch.tensor(data).to(device).to(dtype)
+        self.data = torch.tensor(data, dtype=torch.float32).to(device).to(dtype)
         self.labels = None
         if labels is not None:
             self.labels = torch.tensor(labels).to(device)
@@ -167,7 +173,7 @@ class FastNSDataloader:
         mn_pairs: np.ndarray,
         labels: Optional[np.ndarray] = None,
         batch_size=1024,
-        device=torch.device("cuda"),
+        device=TORCH_DEVICE,
         shuffle: bool = False,
         reshape=None,
         dtype=torch.float32,
@@ -269,7 +275,7 @@ class FastIBNSDataloader:
         mn_pairs: np.ndarray,
         labels: Optional[np.ndarray] = None,
         batch_size=1024,
-        device=torch.device("cuda"),
+        device=TORCH_DEVICE,
         shuffle: bool = False,
         reshape=None,
         dtype=torch.float32,

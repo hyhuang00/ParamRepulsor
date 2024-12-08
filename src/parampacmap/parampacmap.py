@@ -1,7 +1,7 @@
 """Implementing the ParamRepulsor/ParamPaCMAP Algorithm as a sklearn estimator."""
 
 import time
-from typing import Optional, Callable
+from typing import Optional, Callable, Tuple
 
 import torch
 import torch.optim as optim
@@ -84,6 +84,7 @@ class ParamPaCMAP(BaseEstimator):
         dtype: torch.dtype = torch.float32,
         embedding_init: str = "pca",
         seed: Optional[int] = None,
+        save_pairs: bool = False,
     ):
         super().__init__()
         self.n_components = n_components  # output_dims
@@ -112,9 +113,12 @@ class ParamPaCMAP(BaseEstimator):
         self._projector = None
         self.time_profiles = None
         self.const_schedule = const_schedule
+        self.save_pairs = save_pairs
 
         if torch.cuda.is_available():
             self.device = torch.device("cuda")
+        elif torch.backends.mps.is_available():
+            self.device = torch.device("mps")
         else:
             self.device = torch.device("cpu")
         if self._dtype == torch.float32:
@@ -129,7 +133,7 @@ class ParamPaCMAP(BaseEstimator):
             )
         self.embedding_init = embedding_init
 
-    def _scale_input(self, X: np.ndarray, input_dims: int) -> np.ndarray:
+    def _scale_input(self, X: np.ndarray, input_dims: int) -> Tuple[np.ndarray, int]:
         # Data Preprocessing
         if input_dims > 100 and self.apply_pca:
             self._projector = decomposition.PCA(n_components=100)
@@ -141,7 +145,7 @@ class ParamPaCMAP(BaseEstimator):
         elif self.apply_scale == "minmax":
             self._scaler = preprocessing.MinMaxScaler()
             X = self._scaler.fit_transform(X)
-        return X
+        return (X, input_dims)
 
     def fit(
         self,
@@ -454,7 +458,7 @@ class ParamPaCMAP(BaseEstimator):
     def fit_transform(
         self, X: np.ndarray, y: Optional[np.ndarray] = None, per_layer: bool = False
     ):
-        self.fit(X, y=y, per_layer=per_layer)
+        self.fit(X, per_layer=per_layer)
         if len(self.intermediate_outputs) == 0:
             return self._embedding
         return self._embedding, self.intermediate_outputs

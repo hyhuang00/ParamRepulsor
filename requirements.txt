@@ -1,5 +1,0 @@
-numpy
-numba
-scikit-learn
-annoy
-pytorch==2.0
