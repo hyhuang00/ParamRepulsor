@@ -230,7 +230,7 @@ class ParamPaCMAP(BaseEstimator):
             shuffle=False,
             drop_last=False,
             pin_memory=True,
-            num_workers=self.num_workers,
+            num_workers=max(1, self.num_workers),
             persistent_workers=True,
         )
 
