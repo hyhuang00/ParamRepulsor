@@ -11,7 +11,7 @@ from sklearn import decomposition, preprocessing
 from sklearn.base import BaseEstimator
 
 from parampacmap import training
-from parampacmap.models import dataset, module
+from parampacmap.models import dataset, module, TORCH_DEVICE
 from parampacmap.utils import data, utils
 
 
@@ -114,13 +114,8 @@ class ParamPaCMAP(BaseEstimator):
         self.time_profiles = None
         self.const_schedule = const_schedule
         self.save_pairs = save_pairs
+        self.device = TORCH_DEVICE
 
-        if torch.cuda.is_available():
-            self.device = torch.device("cuda")
-        elif torch.backends.mps.is_available():
-            self.device = torch.device("mps")
-        else:
-            self.device = torch.device("cpu")
         if self._dtype == torch.float32:
             torch.set_float32_matmul_precision("medium")
         self.seed = seed

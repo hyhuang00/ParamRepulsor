@@ -1,7 +1,11 @@
+import os
+
 import torch
 from torch import nn
 
-if torch.cuda.is_available():
+if os.environ.get("TORCH_DEVICE", "") == "cpu":
+    TORCH_DEVICE = torch.device("cpu")
+elif torch.cuda.is_available():
     TORCH_DEVICE = torch.device("cuda")
 elif torch.backends.mps.is_available():
     TORCH_DEVICE = torch.device("mps")

@@ -27,6 +27,8 @@ This project also supports `uv` (`pip install uv`):
 ```bash
 echo "3.11" > .python-version  # supported: [3.9, 3.12)
 uv sync (--extra cpu)  # as appropriate for your system
+uv run pytest
+TORCH_DEVICE=cpu uv run pytest  # disable accelerator
 ```
 
 ## How to use our algorithm

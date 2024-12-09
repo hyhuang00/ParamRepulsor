@@ -15,6 +15,7 @@ from .module import (
     PaCMAPLoss,
     ParamPaCMAP,
     SinLayer,
+    TORCH_DEVICE,
 )
 
-__all__ = []
+__all__ = ["ParamPaCMAP", "TORCH_DEVICE"]
