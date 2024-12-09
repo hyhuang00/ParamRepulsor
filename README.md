@@ -17,15 +17,15 @@ This project provides optionals:
 ```bash
 pip install .[cpu]    # cpu-only pytorch
 pip install .[cu118]  # cuda 118
-pip install .[cu121]  # cuda 118
-pip install .[cu124]  # cuda 118
+pip install .[cu121]  # cuda 121
+pip install .[cu124]  # cuda 124
 pip install .[mps]    # arm64/aarch64 (Apple M-Series chips)
 ```
 
 This project also supports `uv` (`pip install uv`):
 
 ```bash
-echo "3.11" >> .python-version
+echo "3.11" > .python-version  # supported: [3.9, 3.12)
 uv sync (--extra cpu)  # as appropriate for your system
 ```
 
