@@ -11,6 +11,24 @@ cd ParamRepulsor
 pip install .
 ```
 
+Note: this will not install `torch`, as this is highly platform-dependent.
+This project provides optionals:
+
+```bash
+pip install .[cpu]    # cpu-only pytorch
+pip install .[cu118]  # cuda 118
+pip install .[cu121]  # cuda 118
+pip install .[cu124]  # cuda 118
+pip install .[mps]    # arm64/aarch64 (Apple M-Series chips)
+```
+
+This project also supports `uv` (`pip install uv`):
+
+```bash
+echo "3.11" >> .python-version
+uv sync (--extra cpu)  # as appropriate for your system
+```
+
 ## How to use our algorithm
 ParamPaCMAP/ParamRepulsor is fully scikit-learn compatible, meaning that it can be
 used as any other scikit-learn based algorithm.
