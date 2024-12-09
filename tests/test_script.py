@@ -5,14 +5,16 @@ from parampacmap import ParamPaCMAP
 
 def main():
     A = np.random.randn(100, 20)
-    r = ParamPaCMAP(num_workers=0).fit_transform(A)
-    assert r.shape[0] == A.shape[0]
-    assert r.shape[1] == 2
+    R = ParamPaCMAP(num_workers=0).fit_transform(A)
+    assert R.shape[0] == A.shape[0]
+    assert R.shape[1] == 2
+    return R
 
 
 def test_basic_usage():
-    main()
+    r = main()
 
 
 if __name__ == "__main__":
-    main()
+    result = main()
+    print(result)
