@@ -1,6 +1,5 @@
 import os
 
-
 DEFAULT_MODEL_DICT = {"backbone": "ANN", "layer_size": [100, 100, 100]}
 
 

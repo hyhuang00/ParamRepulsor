@@ -1,7 +1,6 @@
 """Data related utility functions."""
 import numba
 import numpy as np
-
 from annoy import AnnoyIndex
 
 

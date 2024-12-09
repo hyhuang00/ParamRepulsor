@@ -1,18 +1,18 @@
 """Implementing the ParamRepulsor/ParamPaCMAP Algorithm as a sklearn estimator."""
 
 import time
-from typing import Optional, Callable, Tuple
+from typing import Callable, Optional, Tuple
 
+import numpy as np
 import torch
 import torch.optim as optim
 import torch.utils.data
-import numpy as np
-from sklearn import preprocessing, decomposition
+from sklearn import decomposition, preprocessing
 from sklearn.base import BaseEstimator
 
-from parampacmap.models import module, dataset
-from parampacmap.utils import data, utils
 from parampacmap import training
+from parampacmap.models import dataset, module
+from parampacmap.utils import data, utils
 
 
 def pacmap_weight_schedule(epoch: int):
