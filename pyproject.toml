@@ -1,6 +1,100 @@
-[build-system]
-requires = [
-    "setuptools>=42",
-    "wheel"
+[project]
+name = "parampacmap"
+version = "0.1.0"
+description = "Package for Parameterized PaCMAP (ParamRepulsor)."
+readme = "README.md"
+url = "https://github.com/hyhuang00/ParamRepulsor"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Developers"
 ]
-build-backend = "setuptools.build_meta"
+authors = [
+    { name = "Haiyang Huang", email = "hyhuang@cs.duke.edu" },
+]
+requires-python = ">=3.9,<3.12"  # annoy 1.17 blocks on python 3.12
+dependencies = [
+    "annoy>=1.17",
+    "numba==0.60.0",
+    "numpy>=1.20,<2.1",
+    "scikit-learn>=0.20",
+    # "torch>=2.0.0",
+]
+
+[project.optional-dependencies]
+torch200 = [
+  "torch==2.0.0",
+]
+cpu = [
+  "torch>=2.1.0",
+]
+cu118 = [
+  "torch>=2.1.0",
+]
+cu121 = [
+  "torch>=2.3.0",
+]
+cu124 = [
+  "torch>=2.5.1",
+]
+extras = [
+    "pyyaml>=6.0.2",
+]
+mps = [
+  "torch>=2.5.1",
+]
+
+[tool.uv]
+package = true
+conflicts = [
+  [
+    { extra = "cpu" },
+    { extra = "cu118" },
+    { extra = "cu121" },
+    { extra = "cu124" },
+    { extra = "mps" },
+    { extra = "torch200" },
+  ],
+]
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cpu",   extra = "cpu",   marker = "platform_system != 'Darwin'" },
+    { index = "pytorch-cu118", extra = "cu118", marker = "platform_system != 'Darwin'" },
+    { index = "pytorch-cu121", extra = "cu121", marker = "platform_system != 'Darwin'" },
+    { index = "pytorch-cu124", extra = "cu124", marker = "platform_system != 'Darwin'" },
+]
+
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu118"
+url = "https://download.pytorch.org/whl/cu118"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu121"
+url = "https://download.pytorch.org/whl/cu121"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "ipython>=8.18.1",
+    "pytest>=8.3.4",
+    "pyyaml>=6.0.2",
+]

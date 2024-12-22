@@ -1,11 +1,10 @@
-import yaml
 import os
-
 
 DEFAULT_MODEL_DICT = {"backbone": "ANN", "layer_size": [100, 100, 100]}
 
 
 def read_yaml(config: str):
+    import yaml
     with open(config, "r") as stream:
         try:
             config_dict = yaml.safe_load(stream)
