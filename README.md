@@ -55,4 +55,8 @@ If you have referred to our research in your publication, or you used the ParamR
   author={Huang, Haiyang and Wang, Yingfan and Rudin, Cynthia},
   booktitle={The Thirty-eighth Annual Conference on Neural Information Processing Systems},
   year={2024},
-}```
+}
+```
+
+## Project Contributor
+A full list of project contributors can be found [here](CONTRIBUTORS.md).
