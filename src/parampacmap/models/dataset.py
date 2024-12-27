@@ -83,6 +83,7 @@ class FastDataloader:
         shuffle: bool = False,
         reshape=None,
         dtype=torch.float32,
+        seed: Optional[int] = None,
     ):
         self.data = torch.tensor(data, dtype=torch.float32).to(device).to(dtype)
         self.labels = None
@@ -98,6 +99,7 @@ class FastDataloader:
         self._dtype = dtype
         self.device = device
         self.shuffle = shuffle
+        self.rng = np.random.default_rng(seed=seed)  # for consistency with other loaders.
         if self.reshape is not None:
             assert (
                 np.product(self.reshape) == self.data.shape[-1]
@@ -116,7 +118,7 @@ class FastDataloader:
             self.indices = None
         else:
             # Create index
-            self.indices = torch.randperm(self.n_items).to(self.device)
+            self.indices = torch.randperm(self.n_items, device=self.device)
             self.nn_iter = torch.index_select(self.nn_iter, dim=0, index=self.indices)
             self.fp_iter = torch.index_select(self.fp_iter, dim=0, index=self.indices)
             self.mn_iter = torch.index_select(self.mn_iter, dim=0, index=self.indices)

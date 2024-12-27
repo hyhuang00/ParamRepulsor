@@ -49,12 +49,12 @@ def test_seed_reproducibility_with_multiple_workers(array_fixture, fixed_reducer
     A = array_fixture
 
     # Act
-    R1 = fixed_reducer.fit_transform(
-        A
-    )  # result from one worker matches multiple workers
+    R1 = fixed_reducer.fit_transform(A)
     R2 = ParamPaCMAP(seed=21, num_workers=2, num_epochs=1).fit_transform(A)
+    R3 = ParamPaCMAP(seed=21, num_workers=4, num_epochs=1).fit_transform(A)
 
     # Assert
     assert R1.shape[0] == A.shape[0]
     assert R1.shape[1] == 2
     assert np.allclose(R1, R2)
+    assert np.allclose(R1, R3)

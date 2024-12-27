@@ -115,13 +115,15 @@ class ParamPaCMAP(BaseEstimator):
         self.const_schedule = const_schedule
         self.save_pairs = save_pairs
         self.device = TORCH_DEVICE
-
         if self._dtype == torch.float32:
             torch.set_float32_matmul_precision("medium")
         self.seed = seed
         if seed is not None:
             torch.manual_seed(seed)
-            np.random.seed(seed)
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed(seed)
+                # torch.cuda.manual_seed_all(seed)  # Untested: mutli-GPU reproducibility
+            # np.random.seed(seed)  # does not seem needed - even on CPU-only.
         if embedding_init not in ["pca", "random"]:
             raise ValueError(
                 f"Embedding init mode '{embedding_init}' is not supported."
@@ -216,10 +218,19 @@ class ParamPaCMAP(BaseEstimator):
             shuffle=True,
             reshape=self.data_reshape,
             dtype=data_dtype,
+            # seed=self.seed,  # TODO: may be relevant if dataset.FastDataloader is not used?
         )
         test_set = dataset.TensorDataset(
             data=X, reshape=self.data_reshape, dtype=data_dtype
         )
+
+        def worker_init_fn(worker_id):
+            # Reproducibility: Use a unique seed per worker process
+            worker_seed = self.seed + worker_id if self.seed is not None else None
+            if worker_seed is not None:
+                torch.manual_seed(worker_seed)
+                np.random.seed(worker_seed)
+
         test_loader = torch.utils.data.DataLoader(
             dataset=test_set,
             batch_size=2 * self.batch_size,
@@ -228,6 +239,7 @@ class ParamPaCMAP(BaseEstimator):
             pin_memory=True,
             num_workers=max(1, self.num_workers),
             persistent_workers=True,
+            worker_init_fn=worker_init_fn,  # does nothing if seed=None.
         )
 
         parameter_set = [{"params": self.model.backbone.parameters()}]
