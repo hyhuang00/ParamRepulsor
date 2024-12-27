@@ -10,20 +10,51 @@ def array_fixture():
     return np.random.randn(1_000, 20)
 
 
-def test_seed_reproducibility(array_fixture):
+@pytest.fixture
+def fixed_reducer():
+    return ParamPaCMAP(seed=21, num_epochs=1)
+
+
+def test_seed_reproducibility(array_fixture, fixed_reducer):
+    # Arrange
     A = array_fixture
-    seed = 21
-    R1 = ParamPaCMAP(seed=seed).fit_transform(A)
-    R2 = ParamPaCMAP(seed=seed).fit_transform(A)
+    fixed_reducer = ParamPaCMAP(seed=21, num_epochs=1)
+
+    # Act
+    R1 = fixed_reducer.fit_transform(A)
+    R2 = ParamPaCMAP(seed=21, num_epochs=1).fit_transform(A)
+
+    # Assert
     assert R1.shape[0] == A.shape[0]
     assert R1.shape[1] == 2
     assert np.allclose(R1, R2)
 
 
 def test_instantiation_with_defaults(array_fixture):
+    # Arrange
     A = array_fixture
-    R1 = ParamPaCMAP().fit_transform(A)
-    R2 = ParamPaCMAP().fit_transform(A)
+
+    # Act
+    R1 = ParamPaCMAP(num_epochs=1).fit_transform(A)
+    R2 = ParamPaCMAP(num_epochs=1).fit_transform(A)
+
+    # Assert
     assert R1.shape[0] == A.shape[0]
     assert R1.shape[1] == 2
     assert not np.allclose(R1, R2)
+
+
+def test_seed_reproducibility_with_multiple_workers(array_fixture, fixed_reducer):
+    # Arrange
+    A = array_fixture
+
+    # Act
+    R1 = fixed_reducer.fit_transform(
+        A
+    )  # result from one worker matches multiple workers
+    R2 = ParamPaCMAP(seed=21, num_workers=2, num_epochs=1).fit_transform(A)
+
+    # Assert
+    assert R1.shape[0] == A.shape[0]
+    assert R1.shape[1] == 2
+    assert np.allclose(R1, R2)
