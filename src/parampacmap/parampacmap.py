@@ -224,13 +224,6 @@ class ParamPaCMAP(BaseEstimator):
             data=X, reshape=self.data_reshape, dtype=data_dtype
         )
 
-        def worker_init_fn(worker_id):
-            # Reproducibility: Use a unique seed per worker process
-            worker_seed = self.seed + worker_id if self.seed is not None else None
-            if worker_seed is not None:
-                torch.manual_seed(worker_seed)
-                np.random.seed(worker_seed)
-
         test_loader = torch.utils.data.DataLoader(
             dataset=test_set,
             batch_size=2 * self.batch_size,
@@ -239,7 +232,6 @@ class ParamPaCMAP(BaseEstimator):
             pin_memory=True,
             num_workers=max(1, self.num_workers),
             persistent_workers=True,
-            worker_init_fn=worker_init_fn,  # does nothing if seed=None.
         )
 
         parameter_set = [{"params": self.model.backbone.parameters()}]

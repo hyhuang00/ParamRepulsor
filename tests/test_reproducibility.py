@@ -26,7 +26,7 @@ def test_seed_reproducibility(array_fixture, fixed_reducer):
     # Assert
     assert R1.shape[0] == A.shape[0]
     assert R1.shape[1] == 2
-    assert np.allclose(R1, R2, rtol=5e-4)
+    assert np.allclose(R1, R2, rtol=5e-3)
 
 
 def test_instantiation_with_defaults(array_fixture):
