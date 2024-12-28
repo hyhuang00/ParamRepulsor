@@ -99,7 +99,9 @@ class FastDataloader:
         self._dtype = dtype
         self.device = device
         self.shuffle = shuffle
-        self.rng = np.random.default_rng(seed=seed)  # for consistency with other loaders.
+        self.seed = seed
+        self.rng = np.random.default_rng(seed=seed)
+        self._epoch = 0
         if self.reshape is not None:
             assert (
                 np.product(self.reshape) == self.data.shape[-1]
@@ -111,9 +113,15 @@ class FastDataloader:
 
     def __iter__(self):
         self.idx = 0
+        
+        if self.seed is not None:
+            epoch_seed = self.seed + self._epoch
+            torch.manual_seed(epoch_seed)
+        
         self.nn_iter = torch.tensor(self.nn_pairs, device=self.device).int()
         self.fp_iter = torch.tensor(self.fp_pairs, device=self.device).int()
         self.mn_iter = torch.tensor(self.mn_pairs, device=self.device).int()
+        
         if not self.shuffle:
             self.indices = None
         else:
@@ -122,6 +130,8 @@ class FastDataloader:
             self.nn_iter = torch.index_select(self.nn_iter, dim=0, index=self.indices)
             self.fp_iter = torch.index_select(self.fp_iter, dim=0, index=self.indices)
             self.mn_iter = torch.index_select(self.mn_iter, dim=0, index=self.indices)
+        
+        self._epoch += 1
         return self
 
     def __next__(self):
