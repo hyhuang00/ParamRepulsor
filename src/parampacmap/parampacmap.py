@@ -151,6 +151,12 @@ class ParamPaCMAP(BaseEstimator):
         profile_only: bool = False,
         per_layer: bool = False,
     ) -> None:
+        # Reset random states at the start of fit
+        if self.seed is not None:
+            torch.manual_seed(self.seed)
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed(self.seed)
+
         fit_begin = time.perf_counter()
         input_dims = X.shape[1]
 
@@ -237,6 +243,8 @@ class ParamPaCMAP(BaseEstimator):
 
         parameter_set = [{"params": self.model.backbone.parameters()}]
         # Construct optimizer
+        if self.seed is not None:
+            torch.manual_seed(self.seed)
         if self.optim_type == "Adam":
             optimizer = optim.Adam(parameter_set, lr=self.lr)
         elif self.optim_type == "SGD":
