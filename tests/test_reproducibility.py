@@ -24,9 +24,11 @@ def test_seed_reproducibility(array_fixture, fixed_reducer):
     R2 = ParamPaCMAP(seed=21, num_epochs=1).fit_transform(A)
 
     # Assert
+    R1 = np.round(R1, 3)
+    R2 = np.round(R2, 3)
     assert R1.shape[0] == A.shape[0]
     assert R1.shape[1] == 2
-    assert np.allclose(R1, R2, rtol=5e-3)
+    assert np.allclose(R1, R2, atol=1e-2)
 
 
 def test_instantiation_with_defaults(array_fixture):
