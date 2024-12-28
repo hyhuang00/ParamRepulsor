@@ -24,10 +24,11 @@ def test_basic_usage():
 
 def test_fit_transform_same_as_fit_then_transform():
     # Arrange
+    np.random.seed(21)  # Set seed for input data generation
     A = np.random.randn(1_000, 20)
     P1 = ParamPaCMAP(num_workers=1, seed=42, num_epochs=1)
     # persistent_workers option needs num_workers > 0 (for .transform)
-    P2 = ParamPaCMAP(num_workers=1, seed=42, num_epochs=1)
+    P2 = ParamPaCMAP(num_workers=1, seed=42, num_epochs=1, save_pairs=True)
 
     # Act
     R1 = P1.fit_transform(A)

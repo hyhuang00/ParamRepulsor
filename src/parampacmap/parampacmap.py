@@ -115,6 +115,7 @@ class ParamPaCMAP(BaseEstimator):
         self.const_schedule = const_schedule
         self.save_pairs = save_pairs
         self.device = TORCH_DEVICE
+        self._pairs_saved = False
         if self._dtype == torch.float32:
             torch.set_float32_matmul_precision("medium")
         self.seed = seed
