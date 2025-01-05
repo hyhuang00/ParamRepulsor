@@ -22,6 +22,18 @@ def test_basic_usage():
     assert R.shape[1] == 2
 
 
+def test_pair_saving():
+    A = np.random.randn(1_000, 3)
+    reducer = ParamPaCMAP(n_components=2, save_pairs=True)
+    R = reducer.fit_transform(A)
+    assert reducer.pair_neighbors.shape[0] == 10000
+    assert reducer.pair_neighbors.shape[1] == 2
+    assert reducer.pair_FP.shape[0] == 20000
+    assert reducer.pair_FP.shape[1] == 2
+    assert reducer.pair_MN.shape[0] == 5000
+    assert reducer.pair_MN.shape[1] == 2
+    assert reducer._num_samples == 1000
+
 if __name__ == "__main__":
     result = main()
     print(result)
