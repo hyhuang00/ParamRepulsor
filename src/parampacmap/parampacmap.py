@@ -1,5 +1,6 @@
 """Implementing the ParamRepulsor/ParamPaCMAP Algorithm as a sklearn estimator."""
 
+import logging
 import time
 from typing import Callable, Optional, Tuple
 
@@ -13,6 +14,8 @@ from sklearn.base import BaseEstimator
 from parampacmap import training
 from parampacmap.models import dataset, module, TORCH_DEVICE
 from parampacmap.utils import data, utils
+
+logger = logging.getLogger(__name__)
 
 
 def pacmap_weight_schedule(epoch: int):
@@ -113,7 +116,14 @@ class ParamPaCMAP(BaseEstimator):
         self._projector = None
         self.time_profiles = None
         self.const_schedule = const_schedule
+
+        # Pair-saving related variables
         self.save_pairs = save_pairs
+        self._pairs_saved = False
+        self._num_samples = None
+        self.pair_neighbors = None
+        self.pair_MN = None
+        self.pair_FP = None
         self.device = TORCH_DEVICE
         self._pairs_saved = False
         if self._dtype == torch.float32:
@@ -180,6 +190,9 @@ class ParamPaCMAP(BaseEstimator):
 
         # Constructing dataloader
         if self.save_pairs and self._pairs_saved:
+            if X.shape[0] != self._num_samples:
+                logger.warning("Number of samples has changed. Are you sure you want"
+                " to use the saved pairs?")
             pair_neighbors, pair_MN, pair_FP = (
                 self.pair_neighbors,
                 self.pair_MN,
@@ -200,6 +213,7 @@ class ParamPaCMAP(BaseEstimator):
                 self.pair_MN = pair_MN
                 self.pair_FP = pair_FP
                 self._pairs_saved = True
+                self._num_samples = X.shape[0]
 
         nn_pairs, fp_pairs, mn_pairs = training.convert_pairs(
             pair_neighbors, pair_FP, pair_MN, X.shape[0]

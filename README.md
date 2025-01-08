@@ -1,6 +1,6 @@
 # ParamRepulsor
 
-This is the code repository for the NeurIPS 2024 paper "Navigating the Effect of Parametrization for Dimensionality Reduction".
+This is the code repository for the NeurIPS 2024 paper "Navigating the Effect of Parametrization for Dimensionality Reduction". Our paper can be found [here](https://openreview.net/pdf?id=eYNYnYle41).
 
 ## How to install
 This repository can be installed locally via pip by the following command:
