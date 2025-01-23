@@ -154,7 +154,7 @@ class ParamPaCMAP(nn.Module):
             dtype = model_dict.get("dtype", torch.float32)
             residual = model_dict.get("residual", False)
             bias = model_dict.get("bias", True)
-            activation = model_dict.get("activation", "relu")
+            activation = model_dict.get("activation", "silu")
             layer_size = [input_dims] + model_dict["layer_size"] + [output_dims]
             model = ANN(
                 layer_size=layer_size,
