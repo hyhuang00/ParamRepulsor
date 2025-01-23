@@ -7,7 +7,23 @@ from annoy import AnnoyIndex
 def generate_pair(
     X, n_neighbors, n_MN, n_FP, distance="euclidean", verbose=True, random_state=None
 ):
-    """Generate pairs for the dataset."""
+    """Generate pairs for the dataset.
+    
+    Args:
+        X: Input data array
+        n_neighbors: Number of neighbors to find
+        n_MN: Number of mid-near pairs
+        n_FP: Number of far pairs
+        distance: Distance metric to use
+        verbose: Whether to print progress
+        random_state: Random seed for reproducibility
+
+    Returns:
+        pair_neighbors: Nearest neighbor pairs
+        pair_MN: Mid-near pairs
+        pair_FP: Far pairs
+        tree: Annoy index
+    """
     n, dim = X.shape
     # sample more neighbors than needed
     n_neighbors_extra = min(n_neighbors + 50, n - 1)

@@ -125,13 +125,16 @@ class ParamPaCMAP(BaseEstimator):
         self.pair_MN = None
         self.pair_FP = None
         self.device = TORCH_DEVICE
-
+        self._pairs_saved = False
         if self._dtype == torch.float32:
             torch.set_float32_matmul_precision("medium")
         self.seed = seed
         if seed is not None:
             torch.manual_seed(seed)
-            np.random.seed(seed)
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed(seed)
+                # torch.cuda.manual_seed_all(seed)  # Untested: mutli-GPU reproducibility
+            # np.random.seed(seed)  # does not seem needed - even on CPU-only.
         if embedding_init not in ["pca", "random"]:
             raise ValueError(
                 f"Embedding init mode '{embedding_init}' is not supported."
@@ -158,6 +161,12 @@ class ParamPaCMAP(BaseEstimator):
         profile_only: bool = False,
         per_layer: bool = False,
     ) -> None:
+        # Reset random states at the start of fit
+        if self.seed is not None:
+            torch.manual_seed(self.seed)
+            if torch.cuda.is_available():
+                torch.cuda.manual_seed(self.seed)
+
         fit_begin = time.perf_counter()
         input_dims = X.shape[1]
 
@@ -197,6 +206,7 @@ class ParamPaCMAP(BaseEstimator):
                 n_FP=self.n_FP,
                 distance=self.distance,
                 verbose=False,
+                random_state=self.seed,  # critical line for reproducibility
             )
             if self.save_pairs:
                 self.pair_neighbors = pair_neighbors
@@ -229,10 +239,12 @@ class ParamPaCMAP(BaseEstimator):
             shuffle=True,
             reshape=self.data_reshape,
             dtype=data_dtype,
+            # seed=self.seed,  # TODO: may be relevant if dataset.FastDataloader is not used?
         )
         test_set = dataset.TensorDataset(
             data=X, reshape=self.data_reshape, dtype=data_dtype
         )
+
         test_loader = torch.utils.data.DataLoader(
             dataset=test_set,
             batch_size=2 * self.batch_size,
@@ -245,6 +257,8 @@ class ParamPaCMAP(BaseEstimator):
 
         parameter_set = [{"params": self.model.backbone.parameters()}]
         # Construct optimizer
+        if self.seed is not None:
+            torch.manual_seed(self.seed)
         if self.optim_type == "Adam":
             optimizer = optim.Adam(parameter_set, lr=self.lr)
         elif self.optim_type == "SGD":

@@ -1,6 +1,6 @@
 [project]
 name = "parampacmap"
-version = "0.1.0"
+version = "0.1.1rc0"
 description = "Package for Parameterized PaCMAP (ParamRepulsor)."
 readme = "README.md"
 url = "https://github.com/hyhuang00/ParamRepulsor"
